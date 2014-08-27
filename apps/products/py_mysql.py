@@ -1,4 +1,5 @@
 import sys
+import traceback
 
 import MySQLdb as mysql
 
@@ -43,6 +44,7 @@ class MysqlClient():
         self.params = params
 
     def query(self, sql):
+        print(sql)
         try:
             self.queryNum = self.cur.execute(sql)
             return True
