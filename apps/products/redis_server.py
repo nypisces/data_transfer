@@ -38,7 +38,10 @@ def get_sql(res):
 
 
 def write_into_redis(data):
-    data_list = [data[4], data[5], data[6], data[9], data[-2], data[-1]]
+    """
+数据的顺序：产品类型，开盘价，最高价，最低价，卖一价，昨结，昨收
+    """
+    data_list = [data[0], float(data[4]), float(data[5]), float(data[6]), float(data[9]), int(data[-2]), float(data[-1])]
     redis_key = data[0]
     redis.set(redis_key, json.dumps(data_list))
 

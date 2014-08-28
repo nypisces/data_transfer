@@ -1,5 +1,3 @@
-
-import json
 import time
 import traceback
 
@@ -14,16 +12,16 @@ class Distribution():
 
     def get_data(self):
         self.end_time = time.strftime("%Y-%m-%d %H:%M:%S")
-        self.quate_datetime = self.datetime_to_int(self.end_time)
+        self.quote_datetime = self.datetime_to_int(self.end_time)
         cur_min = int(time.localtime(time.time()).tm_min)
         if cur_min == 0:
             t = time.localtime(time.time() - 60 * 60)
             start_time = time.strftime("%Y-%m-%d %H:%M:%S", t)
-            interval = 60
+            interval = '1h'
             self.get_result(start_time, interval)
         t = time.localtime(time.time() - 15 * 60)
         start_time = time.strftime("%Y-%m-%d %H:%M:%S", t)
-        interval = 15
+        interval = '15'
         self.get_result(start_time, interval)
 
     def get_result(self, start_time, interval):
@@ -31,7 +29,7 @@ class Distribution():
         (self.close, self.last_time) = self.get_sellone(start_time)
         (self.high, self.low) = self.get_high_low(start_time)
         (self.last_sett, self.last_close) = self.get_close(start_time)
-        self.table_name = 'quate_data'
+        self.table_name = 'quote_data'
         self.insert_db(interval)
 
     def get_opening(self, start_time):
@@ -75,7 +73,7 @@ class Distribution():
         return (0, 0)
 
     def insert_db(self, interval):
-        sql = 'insert into {0} (`symbol`, `open`, `high`, `low`, `close`, `last_sett`, `last_close`, `quate_datetime`,`interval`) values \
+        sql = 'insert into {0} (`symbol`, `open`, `high`, `low`, `close`, `last_sett`, `last_close`, `time_stamp`,`time_frame`) values \
                 ("{1}",{2},{3},{4},{5},{6},{7},{8},{9})'.format(self.table_name,
                                                                 self.treaty,
                                                                 self.open,
@@ -84,9 +82,8 @@ class Distribution():
                                                                 self.close,
                                                                 self.last_sett,
                                                                 self.last_close,
-                                                                int(self.quate_datetime),
-                                                                int(interval)) 
-        print(sql)
+                                                                int(self.quote_datetime),
+                                                                interval) 
         self.mysql_client.query(sql)
 
     def datetime_to_int(self, datetime):
