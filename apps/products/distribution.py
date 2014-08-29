@@ -14,7 +14,7 @@ class Distribution():
         self.end_time = time.strftime("%Y-%m-%d %H:%M:%S")
         self.quote_datetime = self.datetime_to_int(self.end_time)
         cur_min = int(time.localtime(time.time()).tm_min)
-        if cur_min == 0:
+        if int(cur_min) == 0:
             t = time.localtime(time.time() - 60 * 60)
             start_time = time.strftime("%Y-%m-%d %H:%M:%S", t)
             interval = '1h'
@@ -74,16 +74,16 @@ class Distribution():
 
     def insert_db(self, interval):
         sql = 'insert into {0} (`symbol`, `open`, `high`, `low`, `close`, `last_sett`, `last_close`, `time_stamp`,`time_frame`) values \
-                ("{1}",{2},{3},{4},{5},{6},{7},{8},{9})'.format(self.table_name,
-                                                                self.treaty,
-                                                                self.open,
-                                                                self.high,
-                                                                self.low,
-                                                                self.close,
-                                                                self.last_sett,
-                                                                self.last_close,
-                                                                int(self.quote_datetime),
-                                                                interval) 
+                ("{1}",{2},{3},{4},{5},{6},{7},{8},"{9}")'.format(self.table_name,
+                                                                  self.treaty,
+                                                                  self.open,
+                                                                  self.high,
+                                                                  self.low,
+                                                                  self.close,
+                                                                  self.last_sett,
+                                                                  self.last_close,
+                                                                  int(self.quote_datetime),
+                                                                  interval) 
         self.mysql_client.query(sql)
 
     def datetime_to_int(self, datetime):
@@ -100,5 +100,5 @@ if __name__ == '__main__':
             distribution = Distribution(treaty)
             distribution.get_data()
         except:
-            #traceback.print_exc(5)
+            traceback.print_exc(5)
             pass
