@@ -57,10 +57,12 @@ def Compare(res, query):
         if res[0] == item['treaty']:
             if int(item['direction']) == 1:
                 if float(res[9]) > item['direction']:
+                    item['sellone'] = float(res[9])
                     sms_into_redis(item)
                     delete_sms_order(item)
             elif int(item['direction']) == 2:
                 if float(res[9]) < item['direction']:
+                    item['sellone'] = float(res[9])
                     sms_into_redis(item)
                     delete_sms_order(item)
 

@@ -1,6 +1,11 @@
+import json
 import urllib.parse
 import urllib.request
-import uuid
+
+from redis import Redis
+
+
+redis = Redis(host='54.223.140.206', port=6379, db=0)
 
 
 def spider(url, params):
@@ -13,21 +18,49 @@ def spider(url, params):
     print(the_page)
 
 
-def get_params():
-    params = {'serialNumber': '6SDK-EMY-6688-KCXTS',
+def get_params(query):
+    print(query)
+    treatys = {
+        'AL': '天通现货铝',
+        'AUT+D': '黄金T+D',
+        'AGT+D': '白银T+D',
+        'AU9999': '黄金9999',
+        'AU9995': '黄金9995',
+        'AU100G': '黄金100G',
+        'MAUT+D': '铂金9995',
+        'XAGUSD': '天通银',
+        'PD': '天通钯金',
+        'PT': '天通白金',
+        'NI': '天通现货溴',
+        'CU': '天通现货铜'
+    }
+    direction = ''
+    if int(query['direction']) == 1:
+        direction = '大于'
+    elif int(query['direction']) == 2:
+        direction = '小于'
+    else:
+        direction = '等于'
+    params = {'cdkey': '6SDK-EMY-6688-KCXTS',
               'sessionKey': '9cb79cd2ec1e30c8d47c6e3226421bf3',
-              'password': '675760',
-              'mobiles': ('15021630677'),
+              'password': '9cb79cd2ec1e30c8d47c6e3226421bf3',
+              'phone': query['mobile'],
               'sendTime': '',
-              'addSerial': '',
-              # 'smsContent': '[金智容] 您好：{0},你预定的规则已经实现，请及时交易，以免带来损失'.format(query['name']),
-              'smsContent': '测试短信发送',
-              'smsPriority': 1,
-              'smsID': uuid.uuid4().hex
+              'addserial': '',
+              'message': '【金智融】 您好：{0} 当前价格是 {1} {2}你预定的价格{3}，\
+                            请及时交易，控制风险'.format(treatys.get(query['treaty'], ''), query['sellone'], direction, query['price']),
+              # 'message': '【金智容】',
+              'seqid': 88998989
               }
     return params
 
-url = 'http://sdk4report.eucp.b2m.cn:8080/sdk/SDKService?wsdl'
-params = get_params()
-res = spider(url, params)
-print(res)
+
+if __name__ == '__main__':
+    while True:
+        query = redis.rpop('sms')
+        if query is not None:
+            url = 'http://sdk4report.eucp.b2m.cn:8080/sdkproxy/sendtimesms.action'
+            query = json.loads(query.decode())
+            params = get_params(query)
+            res = spider(url, params)
+            print(res)

@@ -30,7 +30,7 @@ class Distribution():
         (self.high, self.low) = self.get_high_low(start_time)
         (self.last_sett, self.last_close) = self.get_close(start_time)
         self.table_name = 'quote_data'
-        self.insert_db(interval)
+        self.insert_db(start_time, interval)
 
     def get_opening(self, start_time):
         params = {'name': ['sellone'],
@@ -72,7 +72,7 @@ class Distribution():
             return (item['max(sellone)'], item['min(sellone)'])
         return (0, 0)
 
-    def insert_db(self, interval):
+    def insert_db(self, start_time, interval):
         sql = 'insert into {0} (`symbol`, `open`, `high`, `low`, `close`, `last_sett`, `last_close`, `time_stamp`,`time_frame`) values \
                 ("{1}",{2},{3},{4},{5},{6},{7},{8},"{9}")'.format(self.table_name,
                                                                   self.treaty,
@@ -82,7 +82,7 @@ class Distribution():
                                                                   self.close,
                                                                   self.last_sett,
                                                                   self.last_close,
-                                                                  int(self.quote_datetime),
+                                                                  int(self.start_time),
                                                                   interval) 
         self.mysql_client.query(sql)
 
