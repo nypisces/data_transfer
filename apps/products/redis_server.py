@@ -1,4 +1,5 @@
 import json
+import time
 import traceback
 
 from redis import Redis
@@ -7,6 +8,30 @@ from py_mysql import MysqlClient
 
 
 redis = Redis(host='54.223.140.206', port=6379, db=0)
+
+
+def close_monitor(query):
+
+    for data in query:
+        create_time = data['createTime']
+        period = int(data['period'])
+        pass_time = int_to_datetime(int(time.time()) - period * 60 * 60)
+        if pass_time > create_time:
+            delete_sms_order(query)
+        else:
+            pass
+    cur_day = time.localtime(int(time.time())).tm_mday
+    cur_hour = time.localtime(int(time.time())).tm_hour
+    cur_min = time.localtime(int(time.time())).tm_min
+    if cur_day == 1 and cur_hour == 0 and cur_min == 1:
+        sql = 'delete from sms_order where xpired_flag =1'
+        mysql_client.query(sql)
+
+
+def int_to_datetime(timeStamp):
+    timeArray = time.localtime(timeStamp)
+    otherStyleTime = time.strftime("%Y-%m-%d %H:%M:%S", timeArray)
+    return otherStyleTime
 
 
 def trans_redis(data):
@@ -41,7 +66,9 @@ def write_into_redis(data, trade_time):
     """
 数据的顺序：产品类型，开盘价，最高价，最低价，卖一价，昨结，昨收
     """
-    print('----------{}'.format(data))
+    # print('----------{}'.format(data))
+    print(data)
+    # print(trade_time)
     data_list = [data[0], trade_time, float(data[4]), float(data[5]), float(data[6]), float(data[9]), int(data[-2]), float(data[-1])]
     redis_key = data[0]
     redis.set(redis_key, json.dumps(data_list))
@@ -54,29 +81,35 @@ def sms_into_redis(query):
 
 def Compare(res, query):
     for item in query:
-        if res[0] == item['treaty']:
+        if str(res[0]) == str(item['treaty']):
             if int(item['direction']) == 1:
-                if float(res[9]) > item['direction']:
+                if float(res[9]) > float(item['price']):
                     item['sellone'] = float(res[9])
                     sms_into_redis(item)
                     delete_sms_order(item)
             elif int(item['direction']) == 2:
-                if float(res[9]) < item['direction']:
+                if float(res[9]) < float(item['price']):
                     item['sellone'] = float(res[9])
                     sms_into_redis(item)
                     delete_sms_order(item)
 
 
 def delete_sms_order(query):
-    sql = 'delete from sms_order where id = {}'.format(query['id'])
+    sql = 'update sms_order set xpired_flag=1 where id = {}'.format(query['id'])
     mysql_client.query(sql)
 
-if __name__ == '__main__':     
+
+def datetime_to_int(self, datetime):
+    timeArray = time.strptime(datetime, "%Y-%m-%d %H:%M:%S")
+    return int(time.mktime(timeArray))
+
+
+if __name__ == '__main__':
+    mysql_client = MysqlClient()     
     while True:
         try:
-            mysql_client = MysqlClient()
             params = {
-                'name': ['id', 'direction', 'mobile', 'name', 'treaty', 'price'],
+                'name': ['id', 'direction', 'mobile', 'name', 'treaty', 'price', 'createTime'],
                 'tbl': 'sms_order',
                 'prefix': 'where xpired_flag=0'
             }
@@ -100,5 +133,6 @@ if __name__ == '__main__':
                 Compare(result, query)
             else:
                 pass
+            close_monitor(query)
         except:
             traceback.print_exc(5)

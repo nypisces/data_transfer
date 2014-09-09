@@ -12,50 +12,52 @@ class Distribution():
 
     def get_data(self):
         self.end_time = time.strftime("%Y-%m-%d %H:%M:%S")
-        self.quote_datetime = self.datetime_to_int(self.end_time)
+        # self.quote_datetime = self.datetime_to_int(self.end_time)
         cur_min = int(time.localtime(time.time()).tm_min)
         if int(cur_min) == 0:
             t = time.localtime(time.time() - 60 * 60)
             start_time = time.strftime("%Y-%m-%d %H:%M:%S", t)
             interval = '1h'
-            self.get_result(start_time, interval)
+            quote_datetime = self.datetime_to_int(start_time)
+            self.get_result(start_time, quote_datetime, interval)
         t = time.localtime(time.time() - 15 * 60)
         start_time = time.strftime("%Y-%m-%d %H:%M:%S", t)
         interval = '15'
-        self.get_result(start_time, interval)
+        quote_datetime = self.datetime_to_int(start_time)
+        self.get_result(start_time, quote_datetime, interval)
 
-    def get_result(self, start_time, interval):
+    def get_result(self, start_time, quote_datetime, interval):
         self.open = self.get_opening(start_time)
         (self.close, self.last_time) = self.get_sellone(start_time)
         (self.high, self.low) = self.get_high_low(start_time)
         (self.last_sett, self.last_close) = self.get_close(start_time)
         self.table_name = 'quote_data'
-        self.insert_db(start_time, interval)
+        self.insert_db(quote_datetime, interval)
 
     def get_opening(self, start_time):
-        params = {'name': ['sellone'],
+        params = {'name': ['sell_one'],
                   'tbl': 'products_data',
-                  'prefix': ' where symbol="{2}" and selltime between "{0}" and "{1}" order by id asc limit 1'.format(start_time, self.end_time, self.treaty)}
+                  'prefix': ' where symbol="{2}" and sell_time between "{0}" and "{1}" order by id asc limit 1'.format(start_time, self.end_time, self.treaty)}
         self.mysql_client.selectQuery(params)
         query = self.mysql_client.getSql()
         for item in query:
-            return item['sellone']
+            return item['sell_one']
         return 0
 
     def get_sellone(self, start_time):
-        params = {'name': ['sellone', 'selltime'],
+        params = {'name': ['sell_one', 'sell_time'],
                   'tbl': 'products_data',
-                  'prefix': ' where symbol="{2}" and selltime between "{0}" and "{1}" order by id desc limit 1'.format(start_time, self.end_time, self.treaty)}
+                  'prefix': ' where symbol="{2}" and sell_time between "{0}" and "{1}" order by id desc limit 1'.format(start_time, self.end_time, self.treaty)}
         self.mysql_client.selectQuery(params)
         query = self.mysql_client.getSql()
         for item in query:
-            return (item['sellone'], item['selltime'])
+            return (item['sell_one'], item['sell_time'])
         return (0, 0)
 
     def get_close(self, start_time):
         params = {'name': ['last_sett', 'last_close'],
                   'tbl': 'products_data',
-                  'prefix': ' where symbol="{2}" and selltime between "{0}" and "{1}" limit 1'.format(start_time, self.end_time, self.treaty)}
+                  'prefix': ' where symbol="{2}" and sell_time between "{0}" and "{1}" limit 1'.format(start_time, self.end_time, self.treaty)}
         self.mysql_client.selectQuery(params)
         query = self.mysql_client.getSql()
         for item in query:
@@ -63,13 +65,13 @@ class Distribution():
         return (0, 0)
 
     def get_high_low(self, start_time):
-        params = {'name': ['max(sellone)', 'min(sellone)'],
+        params = {'name': ['max(sell_one)', 'min(sell_one)'],
                   'tbl': 'products_data',
-                  'prefix': ' where symbol="{2}" and selltime between "{0}" and "{1}"'.format(start_time, self.end_time, self.treaty)}
+                  'prefix': ' where symbol="{2}" and sell_time between "{0}" and "{1}"'.format(start_time, self.end_time, self.treaty)}
         self.mysql_client.selectQuery(params)
         query = self.mysql_client.getSql()
         for item in query:
-            return (item['max(sellone)'], item['min(sellone)'])
+            return (item['max(sell_one)'], item['min(sell_one)'])
         return (0, 0)
 
     def insert_db(self, start_time, interval):
@@ -82,7 +84,7 @@ class Distribution():
                                                                   self.close,
                                                                   self.last_sett,
                                                                   self.last_close,
-                                                                  int(self.start_time),
+                                                                  int(start_time),
                                                                   interval) 
         self.mysql_client.query(sql)
 
