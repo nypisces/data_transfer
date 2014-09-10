@@ -34,8 +34,8 @@ env.run = run
 def local_runserver():
     run("ps aux |grep redis_server.py |grep -v 'grep' | awk '{print $2}'|xargs kill -9")
     run("ps aux |grep send_sms.py |grep -v 'grep' | awk '{print $2}'|xargs kill -9")
-    run('nohup /usr/bin/python3 {0}/apps/products/redis_server.py >/dev/null &'.format(env.project_path))
-    run('nohup /usr/bin/python3 {0}/apps/products/send_sms.py >/dev/null &'.format(env.project_path))
+    run('nohup /usr/bin/python3 {0}/apps/products/redis_server.py 1>&2 >>/dev/null &'.format(env.project_path))
+    run('nohup /usr/bin/python3 {0}/apps/products/send_sms.py 1>&2 >>/dev/null &'.format(env.project_path))
 
 
 @task
