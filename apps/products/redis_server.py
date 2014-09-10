@@ -56,7 +56,7 @@ def calc_second(sed):
 
 
 def get_sql(res):
-    sql = 'insert into products_data (symbol, sellone, selltime, last_sett, last_close) \
+    sql = 'insert into products_data (symbol, sell_one, sell_time, last_sett, last_close) \
         values \
         ("{}",{},"{}",{},{})'.format(str(res[0]), res[9], str(trade_time), res[-2], res[-1])
     return sql
