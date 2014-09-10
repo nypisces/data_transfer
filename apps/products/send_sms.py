@@ -14,11 +14,10 @@ def spider(url, params):
     response = urllib.request.urlopen(full_url)
     # print(res.status, res.reason) 
     the_page = response.read() 
-    print(the_page)
+    return the_page
 
 
 def get_params(query):
-    print(query)
     treatys = {
         'AL': '天通现货铝',
         'AUT+D': '黄金T+D',
@@ -62,4 +61,3 @@ if __name__ == '__main__':
             query = json.loads(query.decode())
             params = get_params(query)
             res = spider(url, params)
-            print(res)

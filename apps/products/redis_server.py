@@ -13,7 +13,7 @@ redis = Redis(host='54.223.140.206', port=6379, db=0)
 def close_monitor(query):
 
     for data in query:
-        create_time = data['createTime']
+        create_time = data['created']
         period = int(data['period'])
         pass_time = int_to_datetime(int(time.time()) - period * 60 * 60)
         if pass_time > create_time:
@@ -67,7 +67,6 @@ def write_into_redis(data, trade_time):
 数据的顺序：产品类型，开盘价，最高价，最低价，卖一价，昨结，昨收
     """
     # print('----------{}'.format(data))
-    print(data)
     # print(trade_time)
     data_list = [data[0], trade_time, float(data[4]), float(data[5]), float(data[6]), float(data[9]), int(data[-2]), float(data[-1])]
     redis_key = data[0]
@@ -109,7 +108,7 @@ if __name__ == '__main__':
     while True:
         try:
             params = {
-                'name': ['id', 'direction', 'mobile', 'name', 'treaty', 'price', 'createTime'],
+                'name': ['id', 'direction', 'mobile', 'name', 'treaty', 'price', 'created'],
                 'tbl': 'sms_order',
                 'prefix': 'where xpired_flag=0'
             }
