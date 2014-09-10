@@ -32,8 +32,8 @@ env.run = run
 
 @task
 def local_runserver():
-    run('nohup /usr/bin/python3 {0}/apps/products/redis_server.sh >/dev/null &'.format(env.project_path))
-    run('nohup /usr/bin/python3 {0}/apps/products/send_sms.sh >/dev/null &'.format(env.project_path))
+    run('nohup /usr/bin/python3 {0}/apps/products/redis_server.py >/dev/null &'.format(env.project_path))
+    run('nohup /usr/bin/python3 {0}/apps/products/send_sms.py >/dev/null &'.format(env.project_path))
 
 
 @contextmanager
@@ -150,6 +150,7 @@ def deploy_app():
 #         supervisor_restart('gunicorn')
 #     else:
 #         supervisor_conf()
+    local_runserver()
     sputs(yellow('● 完成部署'))
     puts('', show_prefix=False)
 

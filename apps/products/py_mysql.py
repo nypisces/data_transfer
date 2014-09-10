@@ -7,16 +7,16 @@ import MySQLdb as mysql
 class MysqlClient():
     def __init__(self):
         """mysql info"""
-#         self.dbHost = 'kanbaiyin.cqk1mut4ciue.rds.cn-north-1.amazonaws.com.cn'
-#         self.dbUser = 'root'
-#         self.dbPass = '88888888'
-#         self.dbName = 'kanbaiyin_default'
-#         self.port = 3306
-        self.dbHost = 'localhost'
+        self.dbHost = 'kanbaiyin.cqk1mut4ciue.rds.cn-north-1.amazonaws.com.cn'
         self.dbUser = 'root'
-        self.dbPass = ''
+        self.dbPass = '88888888'
         self.dbName = 'kanbaiyin_default'
         self.port = 3306
+#         self.dbHost = 'localhost'
+#         self.dbUser = 'root'
+#         self.dbPass = ''
+#         self.dbName = 'kanbaiyin_default'
+#         self.port = 3306
         self._conn()
 
     def _conn(self):
