@@ -36,6 +36,7 @@ def local_runserver():
     run("ps aux |grep send_sms.py |grep -v 'grep' | awk '{print $2}'|xargs kill -9")
     run('nohup /usr/bin/python3 {0}/apps/products/redis_server.py >/dev/null &'.format(env.project_path))
     run('nohup /usr/bin/python3 {0}/apps/products/send_sms.py >/dev/null &'.format(env.project_path))
+    run('dos2unix {0}/monitor.sh'.format(env.project_path))
 
 
 @task
