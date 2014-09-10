@@ -1,5 +1,4 @@
 import sys
-import traceback
 
 import MySQLdb as mysql
 
