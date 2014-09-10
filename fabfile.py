@@ -32,8 +32,15 @@ env.run = run
 
 @task
 def local_runserver():
+    run("ps aux |grep redis_server.py |grep -v 'grep' | awk '{print $2}'|xargs kill -9")
+    run("ps aux |grep send_sms.py |grep -v 'grep' | awk '{print $2}'|xargs kill -9")
     run('nohup /usr/bin/python3 {0}/apps/products/redis_server.py >/dev/null &'.format(env.project_path))
     run('nohup /usr/bin/python3 {0}/apps/products/send_sms.py >/dev/null &'.format(env.project_path))
+
+
+@task
+def local_crontab():
+    run("echo */15 * * * * /usr/bin/pytnon3 {0}/apps/products/distribution.py >>".format(env.project_path))
 
 
 @contextmanager
