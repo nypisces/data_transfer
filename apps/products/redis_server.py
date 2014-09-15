@@ -64,11 +64,11 @@ def get_sql(res):
 
 def write_into_redis(data, trade_time):
     """
-数据的顺序：产品类型，开盘价，最高价，最低价，卖一价，昨结，昨收
+数据的顺序：产品类型，开盘价，最高价，最低价，买一价，卖一价，昨结，昨收
     """
     # print('----------{}'.format(data))
     # print(trade_time)
-    data_list = [data[0], trade_time, float(data[4]), float(data[5]), float(data[6]), float(data[9]), int(data[-2]), float(data[-1])]
+    data_list = [data[0], trade_time, float(data[4]), float(data[5]), float(data[6]), float(data[8]), float(data[9]), float(data[-1])]
     redis_key = data[0]
     redis.set(redis_key, json.dumps(data_list))
 
