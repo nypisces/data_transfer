@@ -94,7 +94,7 @@ class Distribution():
 
 
 if __name__ == '__main__':
-    treaty_list = ['XAGUSD', 'PD', 'PT', 'NI', 'CU', 'AL', 'AUT+D', 'AGT+D', 'AU9999', 'AU9995', 'CUAU100G', 'MAUT+D']
+    treaty_list = ['XAGUSD', 'PD', 'PT', 'NI', 'CU', 'AL', 'AUT+D', 'AGT+D', 'AU9999', 'AU9995', 'AU100G', 'MAUT+D']
     treaty_data_list = []
     redis_client = RedisClient()
     for treaty in treaty_list:

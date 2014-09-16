@@ -64,7 +64,7 @@ def get_sql(res):
 
 def write_into_redis(data, trade_time):
     """
-数据的顺序：产品类型，开盘价，最高价，最低价，买一价，卖一价，昨结，昨收
+数据的顺序：产品类型，开盘价，最高价，最低价，买一价，卖一价，昨收
     """
     # print('----------{}'.format(data))
     # print(trade_time)
