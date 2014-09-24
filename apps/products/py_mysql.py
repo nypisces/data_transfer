@@ -6,7 +6,7 @@ import MySQLdb as mysql
 class MysqlClient():
     def __init__(self):
         """mysql info"""
-        self.dbHost = 'kanbaiyin.cqk1mut4ciue.rds.cn-north-1.amazonaws.com.cn'
+        self.dbHost = 'kanbaiyin-test.cqk1mut4ciue.rds.cn-north-1.amazonaws.com.cn'
         self.dbUser = 'aws'
         self.dbPass = '88888888'
         self.dbName = 'kanbaiyin_default'
