@@ -90,16 +90,16 @@ def hello():
 @task()
 @roles('app')
 def init_app():
-#     apt_upgrade()
-#     sudo('apt-get -y install libmysqlclient-dev python3-pip git tree')  # tree只是为了登陆服务器时查看方便 libjpeg8-dev libpng-dev libgif-dev
-#     sudo('pip3 install -U virtualenvwrapper')
+    apt_upgrade()
+    sudo('apt-get install -y libmysqlclient-dev python3-pip git tree')  # tree只是为了登陆服务器时查看方便 libjpeg8-dev libpng-dev libgif-dev
+    # sudo('pip3 install -U virtualenvwrapper')
 #     sudo('pip3 install git+https://github.com/Supervisor/supervisor.git')
 #     put('configs/bashrc', '~/.bashrc')
     sputs('创建代码库')
     run('git clone {0.repository} {0.project_path}'.format(env))
     if env.test:
         smartrun('git checkout develop')
-    run('mkvirtualenv {}'.format(env.project_name))  # 永远不要在virtualenv上用sudo
+#     run('mkvirtualenv {}'.format(env.project_name))  # 永远不要在virtualenv上用sudo
 
 
 @task
@@ -129,7 +129,7 @@ def init_newrelic():
 # ============
 def apt_upgrade():
     sputs(yellow('● ├── apt-get升级/安装'))
-    sudo('apt-get -y update')
+    sudo('apt-get update')
     sudo('apt-get -y upgrade')  # 为了稳定, 不要用dist-upgrade
     sudo('apt-get clean')
 
