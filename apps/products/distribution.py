@@ -67,7 +67,8 @@ class Distribution():
     def get_high_low(self, start_time):
         params = {'name': ['max(sell_one)', 'min(sell_one)'],
                   'tbl': 'products_data',
-                  'prefix': ' where symbol="{2}" and sell_time between "{0}" and "{1}"'.format(start_time, self.end_time, self.treaty)}
+                  'prefix': ' where symbol="{2}" and sell_time between "{0}" and "{1}"'.format(start_time, self.end_time, self.treaty)
+                  }
         self.mysql_client.selectQuery(params)
         query = self.mysql_client.getSql()
         for item in query:

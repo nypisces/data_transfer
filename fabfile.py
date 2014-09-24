@@ -21,7 +21,7 @@ env.project_path = '~/GitHub/{}'.format(env.project_name)
 # 手动配置
 env.repository = 'git@github.com:finwise/{}.git'.format(env.project_name)
 env.user = 'ubuntu'
-env.key_filename = '~/key/06866com-aws-cn.pem'  # SSH 证书 / 密码
+env.key_filename = '~/key/finwise-aws-cn-test.pem'  # SSH 证书 / 密码
 env.newrelic_key = '7cba721d377c66139fb07c29ecf1bae50e3dbf43'
 # 其他
 env.forward_agent = True  # GitHub的代理转发部署方式需要开启这项
